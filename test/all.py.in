@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+
+import os
+import re
+import sys
+
+sys.path.append(BUILDDIR)
+
+srcfiles=os.listdir('%s' % SRCDIR)
+srcfiles=['%s/%s' % (SRCDIR,f) for f in srcfiles]
+localfiles=os.listdir('.')
+
+files=srcfiles+localfiles
+regex=re.compile(r'.*\.txt\Z')
+
+nbrErrors=0
+
+
+import doctest
+for f in files:
+    m=regex.match(f)
+    if m: 
+        print 'Running %s ...' % f
+        dt=doctest.testfile(f,module_relative=False,globs={'SRCDIR':SRCDIR,'BUILDDIR':BUILDDIR})
+        if dt[0]==0:
+            print '%s OK' % f
+        else :
+            nbrErrors+=1
+
+
+sys.exit(nbrErrors)

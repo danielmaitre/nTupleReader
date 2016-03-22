@@ -1,0 +1,21 @@
+>>> import sys
+>>> sys.path.append( '%s/../' % SRCDIR)
+>>> import nTupleReader as NTR
+>>> 
+>>> r=NTR.nTupleReader()
+>>> r.addFile('%s/data/sample.root' % SRCDIR)
+>>> 
+>>> r.nextEntry()
+True
+>>> r.getEnergy(0)
+75.81607055664062
+>>> r.getEnergy(1)
+76.68804168701172
+>>> r.getEnergy(2)
+Traceback (most recent call last):
+  File "<ipython-input-17-17f2bbc372bd>", line 1, in <module>
+    r.getEnergy(2)
+  File "/home/daniel/workspace/NtupleAnalysis/build_fedora/NtuplesReader/nTupleReader.py", line 320, in getEnergy
+    def getEnergy(self, *args): return _nTupleReader.nTupleReader_getEnergy(self, *args)
+SystemError: nTupleReader error: out of bounds.
+

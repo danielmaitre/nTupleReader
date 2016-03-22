@@ -1,0 +1,13 @@
+import nTupleReader as NR
+
+r=NR.nTupleReader()
+r.addFile('@prefix@/share/ntuplereader/sample.root')
+
+r.nextEntry()
+
+for i in range(r.getParticleNumber()):
+    print "p(%d)=(%f,%f,%f,%f)" % (i,r.getEnergy(i),r.getX(i),r.getY(i),r.getZ(i))
+
+
+
+

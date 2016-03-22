@@ -1,0 +1,77 @@
+>>> import sys
+>>> 
+>>> 
+>>> sys.path.append( '%s/../' % SRCDIR)
+>>> import nTupleReader as NTR
+>>> 
+>>> r=NTR.nTupleReader()
+>>> r.addFile('%s/data/sample.root' % SRCDIR)
+>>> 
+>>> int(r.getNumberOfEntries())
+10
+>>> 
+>>> r.nextEntry()
+True
+>>> r.getID()
+1
+>>> 
+>>> r.nextEntry()
+True
+>>> r.getID()
+2
+>>> 
+>>> r.setStartEntryIndex(1)
+>>> r.nextEntry()
+True
+>>> r.getID()
+1
+>>> 
+>>> r.setStartEntryIndex(1)
+>>> [(i,r.nextEntry()) for i in range(0,11) ]
+[(0, True), (1, True), (2, True), (3, True), (4, True), (5, True), (6, True), (7, True), (8, True), (9, True), (10, False)]
+>>> 
+>>> r.setStartEntryIndex(1)
+>>> r.setEndEntryIndex(2)
+>>> [(i,r.nextEntry()) for i in range(0,3) ]
+[(0, True), (1, False), (2, False)]
+>>> 
+>>> r.getEntry(6)
+>>> 
+>>> r.nextEntry()
+False
+>>> r.setStartEntryIndex(1)
+>>> r.setEndEntryIndex(-1)
+>>> r.setStartEvent(4)
+>>> r.setMaxEvent(2)
+>>> print [ ('%d-th iteration' %i, r.nextEntry(),r.getID()) for i in range(1,4)] 
+[('1-th iteration', True, 4), ('2-th iteration', True, 5), ('3-th iteration', False, 6)]
+>>> 
+>>> r.setStartEvent(3)
+>>> r.setMaxEvent(3)
+>>> print [ ('%d-th iteration' %i, r.nextEntry(),r.getID()) for i in range(1,5)] 
+[('1-th iteration', True, 3), ('2-th iteration', True, 4), ('3-th iteration', True, 5), ('4-th iteration', False, 6)]
+>>> r.setStartEntryIndex(1)
+>>> r.setEndEntryIndex(100)
+>>> [(i,r.nextEntry(),r.getID()) for i in range(1,12) ]
+[(1, True, 1), (2, True, 2), (3, True, 3), (4, True, 4), (5, True, 5), (6, True, 6), (7, True, 7), (8, True, 8), (9, True, 9), (10, True, 10), (11, False, 10)]
+>>> 
+>>> r.setStartEntryIndex(1)
+>>> r.setEndEntryIndex(2)
+>>> [(i,r.nextEntry()) for i in range(0,3) ]
+[(0, True), (1, False), (2, False)]
+>>> 
+>>> r.getEntry(6)
+>>> 
+>>> r.nextEntry()
+False
+>>> r.setStartEntryIndex(1)
+>>> r.setEndEntryIndex(-1)
+>>> r.setStartEvent(4)
+>>> r.setMaxEvent(2)
+>>> print [ ('%d-th iteration' %i, r.nextEntry(),r.getID()) for i in range(1,4)] 
+[('1-th iteration', True, 4), ('2-th iteration', True, 5), ('3-th iteration', False, 6)]
+>>> 
+>>> r.setStartEvent(3)
+>>> r.setMaxEvent(3)
+>>> print [ ('%d-th iteration' %i, r.nextEntry(),r.getID()) for i in range(1,5)] 
+[('1-th iteration', True, 3), ('2-th iteration', True, 4), ('3-th iteration', True, 5), ('4-th iteration', False, 6)]
