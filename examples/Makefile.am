@@ -7,7 +7,7 @@ clean-local:
 	rm -f *.o nTupleReaderExample
 
 nTupleReaderExample.o:	nTupleReaderExample.cpp
-	$(CXX) -c -g   $$(sh $(NTR_PATH)/nTupleReader-config --include) -o $@ $<
+	$(CXX) -c -g   $$(sh $(NTR_PATH)/nTupleReader-config --cxxflags) -o $@ $<
 
 
 
