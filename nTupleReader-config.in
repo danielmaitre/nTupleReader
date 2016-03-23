@@ -11,14 +11,17 @@ case $1 in
     echo -L@prefix@/lib/ -lNTR @ROOT_LIBS@ ;;
   --rpath)
     echo -Wl,-rpath,@prefix@/lib/  ;;
-  --include)
-    echo -I@prefix@/include/ntuplereader @ROOT_CXXFLAGS@  ;;
+  --cxxflags)
+    echo -I@prefix@/include/ @ROOT_CXXFLAGS@  ;;
+  --cppflags)
+    echo -I@prefix@/include/  ;;
   *)
     echo "nTupleReader-config: configuration script";
     echo "Options:";
     echo "  nTupleReader-config --version : returns the version";
     echo "  nTupleReader-config --prefix  : returns the installation path";
-    echo "  nTupleReader-config --include  : returns the compiler flags to include the header";
+    echo "  nTupleReader-config --cxxflags  : returns the compiler flags including the flags from ROOT";
+    echo "  nTupleReader-config --cppflags  : returns the precompiler flags to include the nTupleReader headers";
     echo "  nTupleReader-config --libs    : returns the linker arguments to link the nTupleReader library";
     echo "  nTupleReader-config --rpath    : returns the linker arguments to include the library in the rpath of the library or executable to be linked";;
 esac

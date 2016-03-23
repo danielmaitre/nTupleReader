@@ -1,4 +1,5 @@
-SUBDIRS = test examples
+#SUBDIRS = test examples
+SUBDIRS = test 
 
 AM_CPPFLAGS += $(PYTHON_INCLUDE) -I$(PYTHON_INCLUDE_DIR)
 
@@ -118,5 +119,8 @@ endif
 
 bin_SCRIPTS=nTupleReader-config
 
-pkginclude_HEADERS = nTupleReader.h EventReaderBase.h NtupleInfo.h
+pkginclude_HEADERS = nTupleReader.h EventReaderBase.h NtupleInfo.h pdf.h weightFunctions.h InfoStruct.h
 
+@DX_RULES@
+
+MOSTLYCLEANFILES=$(DX_CLEANFILES)
