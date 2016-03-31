@@ -8,12 +8,15 @@
 #define LHAPDF_NEW_VERSION
 #endif
 #endif
+
+#include <vector>
+
 namespace Pdf {
 
 struct initialState {
-	static int s_id1;
-	static int s_id2;
-	static void setInitialState(int id1,int id2);
+  static int s_id1;
+  static int s_id2;
+  static void setInitialState(int id1,int id2);
 } ;
 
 
@@ -69,6 +72,8 @@ class current {
 public:
 	static LHAPDF::PDF* s_PDF;
 	static LHAPDF::PDFSet* s_PDFSet;
+	static void init();
+	static std::vector<LHAPDF::PDF*> s_PDFs;
 };
 
 #endif

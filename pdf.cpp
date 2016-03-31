@@ -13,6 +13,16 @@ int initialState::s_id2=1;
 
 LHAPDF::PDF* current::s_PDF=0;
 LHAPDF::PDFSet* current::s_PDFSet=0;
+  std::vector<LHAPDF::PDF*> current::s_PDFs;
+void current::init(){
+  static bool done=false;
+  if (!done) {
+    s_PDFs=s_PDFSet->mkPDFs();    
+    done=true;
+  }
+
+}
+
 #endif
 
 void initialState::setInitialState(int id1,int id2){
