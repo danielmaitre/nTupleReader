@@ -211,6 +211,7 @@ and `R' for the subtracted real emission.
 	//! Destructor
 	virtual ~nTupleReader_impl();
 	virtual void addFile(const std::string& filename);
+	virtual void addFiles(const std::vector<std::string>& files);
 
 #ifdef USE_HEPMC
 	HepMCcoll d_collider;

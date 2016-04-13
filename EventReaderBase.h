@@ -13,8 +13,10 @@ class RootFileReaderBase  {
 	long d_lastID;
 	long d_startTrueEvent;
 	long d_maxTrueEvent;
-protected:
+	NtupleInfo<MAX_NBR_PARTICLES>* d_storage;
+ protected:
 	TChain* d_fin ;
+	bool d_initialised;
 public:
 	//! Constructor
 	RootFileReaderBase();
@@ -71,12 +73,12 @@ public:
 	/** Adds a file to the reader.
 	 * \param fileName is the name of the file.
 	 * */
-	virtual void addFile(const std::string& fileName);
+	virtual void addFile(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& fileName);
 	/** Adds a list of files to the reader
 	 * \param fileNames is a vector of {\\tt std::string\/} containing the names
 	 * of the files to be added, which will be read in the order given.
 	 * */
-	void addFiles(std::vector<std::string> fileNames);
+	void addFiles(NtupleInfo<MAX_NBR_PARTICLES>& NI,std::vector<std::string> fileNames);
 
 	//! initialises the reader
 	void init(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName="t3",bool doublePrecision=false,bool withNcount=false);
@@ -85,6 +87,7 @@ public:
 
 private:
 	void resetEventCounter(){d_iEvent=0;d_lastID=-1;};
+	void initStorage(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& fileName );
 };
 
 
