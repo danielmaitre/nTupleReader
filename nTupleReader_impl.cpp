@@ -15,6 +15,8 @@
 #include "pdf.h"
 #include "LHAPDF/LHAPDF.h"
 #include "TLeaf.h"
+#include "TList.h"
+#include "TFile.h"
 #ifdef USE_HEPMC
 #include "HepMC/GenEvent.h"
 using namespace HepMC;
@@ -22,26 +24,33 @@ using namespace HepMC;
 
 
 nTupleReader_impl::nTupleReader_impl(): RootFileReaderBase() {
-	init(d_NI,"BHSntuples");
+  //init(d_NI,"BHSntuples"); do that later
 	d_member=-1;
-	d_fin->SetBranchAddress("alphasPower",&d_alphasPower);
-	d_fin->SetBranchAddress("part",d_part);
+	//d_fin->SetBranchAddress("alphasPower",&d_alphasPower);
+	//d_fin->SetBranchAddress("part",d_part);
 	resetCrossSection();
 };
 
 nTupleReader_impl::nTupleReader_impl(const std::string& treeName): RootFileReaderBase(){
-	init(d_NI,treeName);
+  //init(d_NI,treeName); do that later
 	d_member=-1;
 	std::string alphaType;
 	//alphasPower branch will be added when files are loaded
-	d_fin->SetBranchAddress("part",d_part);
+
 	resetCrossSection();
 };
 
+
+
+
+
+
 void nTupleReader_impl::addFile(const std::string& fileName){
-	RootFileReaderBase::addFile(fileName);
+
+  RootFileReaderBase::addFile(d_NI,fileName);
 	std::string alphaType;
 	TBranch* b=d_fin->GetBranch("alphasPower");
+	d_fin->SetBranchAddress("part",d_part);
 	if (b){
 		TLeaf* l=b->GetLeaf("alphasPower");
 		if (l){
@@ -62,6 +71,15 @@ void nTupleReader_impl::addFile(const std::string& fileName){
 		convertFromChar=false;
 	}
 }
+
+
+void nTupleReader_impl::addFiles(const std::vector<std::string>& files){
+  RootFileReaderBase::addFiles(d_NI,files);
+
+}
+
+
+
 
 void nTupleReader_impl::setPDF(const std::string& name){
 #ifdef LHAPDF_NEW_VERSION
