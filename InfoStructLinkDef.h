@@ -1,3 +1,6 @@
+#ifndef INFOSTRUCTLINKDEF_H_
+#define INFOSTRUCTLINKDEF_H_
+
 #ifdef __CINT__
 
 #pragma link off all globals;
@@ -15,3 +18,4 @@
 
 
 #endif
+#endif /* INFOSTRUCTLINKDEF_H_*/

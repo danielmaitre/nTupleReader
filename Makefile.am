@@ -27,6 +27,7 @@ InfoStructDict.h:	InfoStructDict.cpp
 
 CLEANFILES = InfoStructDict.h InfoStructDict.cpp 
 
+
 libInfo_la_SOURCES = InfoStruct.cpp InfoStruct.h InfoStructLinkDef.h 
 nodist_libInfo_la_SOURCES = InfoStructDict.h InfoStructDict.cpp 
 
@@ -70,7 +71,7 @@ if USE_HEPMC
 AM_LDFLAGS += $(HEPMC_LDFLAGS)
 endif
 
-libInfo_la_LDFLAGS = $(ROOT_LDFLAGS)
+libInfo_la_LDFLAGS = $(ROOT_LDFLAGS) -rpath $(libdir)
 
 AM_CXXFLAGS =  $(FASTJET_CXXFLAGS)
 AM_CXXFLAGS += $(ROOT_CXXFLAGS)
