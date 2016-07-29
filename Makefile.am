@@ -1,6 +1,8 @@
 #SUBDIRS = test examples
 SUBDIRS = test 
 
+ACLOCAL_AMFLAGS=-I m4
+
 AM_CPPFLAGS += $(PYTHON_INCLUDE) -I$(PYTHON_INCLUDE_DIR)
 
 bin_PROGRAMS= getInfo

@@ -4,6 +4,8 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AM_DISABLE_STATIC
 AC_PROG_CXX
 
+AC_CONFIG_MACRO_DIR([m4])
+
 AM_PATH_PYTHON
 m4_ifdef([AM_PROG_AR],[AM_PROG_AR])
 AC_PROG_LIBTOOL
@@ -21,7 +23,7 @@ AC_CONFIG_FILES([
 
 m4_include([m4Macros/ax_prog_doxygen.m4])
 m4_include([m4Macros/ac_prog_doxygen.m4])
-AC_PROG_DOXYGEN
+
 DX_DOXYGEN_FEATURE(ON)
 DX_DOT_FEATURE(OFF)
 DX_HTML_FEATURE(OFF)
@@ -32,7 +34,7 @@ DX_RTF_FEATURE(OFF)
 DX_XML_FEATURE(ON)
 DX_PDF_FEATURE(OFF)
 DX_PS_FEATURE(OFF)
-
+AC_PROG_DOXYGEN
 DX_INIT_DOXYGEN('nTupleReader', 'Doxyfile', '.')
 
 m4_include([m4Macros/m4_ax_python.m4])

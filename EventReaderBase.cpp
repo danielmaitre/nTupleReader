@@ -83,16 +83,19 @@ void RootFileReaderBase::addFiles(NtupleInfo<MAX_NBR_PARTICLES>& NI,std::vector<
 	for (std::vector<std::string>::iterator it=fileNames.begin();it!=end;++it){
 	  addFile(NI,*it);
 	}
-	d_endEvent=d_fin->GetEntries();
+	d_endEvent=(long)d_fin->GetEntries();
+	//std::cout << " nEntries after addFiles in RootFileReader: " << (long)d_fin->GetEntries()<< std::endl;
 }
 
 void RootFileReaderBase::addFile(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& fileName){
   if (!d_initialised){
     initStorage(NI,fileName);
+    d_initialised=true;
   }
   d_fin->Add(fileName.c_str());
 		long nEntries=(long)d_fin->GetEntries();
 		d_endEvent=nEntries;
+		cout << "nEntries so far: " << d_endEvent << "(" << d_fin->GetEntries() <<")"<< std::endl;
 }
 
 RootFileReaderBase::RootFileReaderBase(): d_fin(0){
