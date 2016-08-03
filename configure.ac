@@ -75,7 +75,8 @@ AC_ARG_WITH([root-path], [AS_HELP_STRING([--with-root-path],
 
 AS_IF([test "x$with_root_path" != xyes],
           [AC_SUBST([ROOT_CXXFLAGS], ["`$with_root_path/bin/root-config --cflags`"])
-	   AC_SUBST([ROOT_LDFLAGS], ["`$with_root_path/bin/root-config --libs`"])
+	   AC_SUBST([ROOT_LDFLAGS], ["`$with_root_path/bin/root-config --ldflags`"])
+	   AC_SUBST([ROOT_LIBS], ["`$with_root_path/bin/root-config --libs`"])
 	   AC_SUBST([ROOTCINT], ["`$with_root_path/bin/root-config --prefix`/bin/rootcint"])
 	   ROOTINCDIR=`$with_root_path/bin/root-config --incdir`
 	  ],
