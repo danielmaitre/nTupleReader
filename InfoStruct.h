@@ -1,3 +1,6 @@
+#ifndef _H_INFOSTRUCT_H_
+#define _H_INFOSTRUCT_H_
+
 #include "TObject.h"
 #include "TString.h"
 #include <string> 
@@ -29,3 +32,5 @@ public:
 	const std::string& getContent() const ;
 	ClassDef(InfoFile,1);// infoFile
 };
+
+#endif   /* _H_INFOSTRUCT_H_*/
