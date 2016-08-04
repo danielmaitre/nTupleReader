@@ -7,7 +7,7 @@
 #include "TLeaf.h"
 #include "TList.h"
 #include "TFile.h"
-
+#include "version.h"
 
 //#include "debug.h"
 
@@ -19,62 +19,39 @@ using namespace std;
 #define NEW_TREE_NAME      1
 #define DOUBLE_PRECISION   2
 #define WITH_NCOUNT        4
+#define WITH_MINLO         8
 
-
-int nTupleVersion(const std::string& filename){
-  int version=0;
-  TFile f(filename.c_str(),"READONLY");
-  TList* l=f.GetListOfKeys();
-  TTree* t;
-
-  if (l->FindObject("BHSntuples")){
-    version |=  NEW_TREE_NAME ;
-    t=dynamic_cast<TTree*>(f.Get("BHSntuples"));
-  } else {
-    t=dynamic_cast<TTree*>(f.Get("t3"));
-  }
-  TBranch* b=t->FindBranch("px");
-  TLeaf* leaf=b->GetLeaf("px");
-  if ( std::string(leaf->GetTypeName()) == "Double_t"){
-    version |=  DOUBLE_PRECISION ;
-  } else if ( std::string(leaf->GetTypeName()) != "Float_t"){
-    std::cerr << "Could not determine the precision of the momenta! got type: '" <<leaf->GetTypeName() <<"'"   << std::endl;
-  }
-
-  if (t->FindBranch("ncount")){
-    version |= WITH_NCOUNT;
-  }
-  std::cout << "Version " << version << std::endl;
-  f.Close();
-  return version;
-}
 
 
 void RootFileReaderBase::initStorage(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& fileName){
   if (!d_initialised){
-    int version=nTupleVersion(fileName);
+    d_version=nTupleVersion(fileName);
     string treeName;
-    bool doublePrecision;
-    bool withNcount;
-    if ( ( version & NEW_TREE_NAME ) == NEW_TREE_NAME  ){
+    bool doublePrecision,withNcount,withMinlo;
+    if ( nTupleHasNewTree(d_version)  ){
       treeName=std::string("BHSntuples");
     } else {
       treeName=std::string("t3");
     }
-    if ( ( version & DOUBLE_PRECISION ) == DOUBLE_PRECISION  ){
+    if ( nTupleHasDoublePrecision(d_version) ){
       doublePrecision=true;
       std::cout << "Using double precision momenta..." << std::endl;
     } else {
-      std::cout << "Using simple precision momenta..." << (version & DOUBLE_PRECISION)<< std::endl;
+      std::cout << "Using simple precision momenta..." <<  std::endl;
       doublePrecision=false;
     }
-    if ( ( version & WITH_NCOUNT ) == WITH_NCOUNT  ){
+    if ( nTupleHasNcount(d_version) ){
       withNcount=true;
     } else {
       withNcount=false;
     }
-    init(NI,treeName.c_str(),doublePrecision,withNcount);
-  }  
+    if ( nTupleHasMinlo(d_version) ){
+      withMinlo=true;
+    } else {
+      withMinlo=false;
+    }
+    init(NI,treeName.c_str(),doublePrecision,withNcount,withMinlo);
+  }
 }
 
 
@@ -121,10 +98,10 @@ RootFileReaderBase::RootFileReaderBase(NtupleInfo<MAX_NBR_PARTICLES>& NI,const s
 	d_storage=&NI;
 }
 
-void RootFileReaderBase::init(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName,bool doublePrecision,bool withNcount){
+void RootFileReaderBase::init(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName,bool doublePrecision,bool withNcount,bool withMinlo){
 	d_fin = new TChain(treeName.c_str());
 
-	NI.Assign(d_fin,doublePrecision,withNcount);
+	NI.Assign(d_fin,doublePrecision,withNcount,withMinlo);
 
 }
 

@@ -14,7 +14,8 @@ libNTR_la_SOURCES = \
 	EventReaderBase.cpp EventReaderBase.h \
 	weightFunctions.cpp weightFunctions.h \
 	nTupleReader.cpp nTupleReader.h \
-	nTupleReader_impl.cpp nTupleReader_impl.h 
+	nTupleReader_impl.cpp nTupleReader_impl.h \
+	version.h version.cpp
 
 if USE_HEPMC
 libNTR_la_SOURCES += HepMC_utils.cpp HepMC_utils.h
@@ -122,7 +123,7 @@ endif
 
 bin_SCRIPTS=nTupleReader-config
 
-pkginclude_HEADERS = nTupleReader.h EventReaderBase.h NtupleInfo.h pdf.h weightFunctions.h InfoStruct.h
+pkginclude_HEADERS = nTupleReader.h EventReaderBase.h NtupleInfo.h pdf.h weightFunctions.h InfoStruct.h version.h
 
 @DX_RULES@
 

@@ -10,13 +10,13 @@
 #include "TLeaf.h"
 #include <iostream>
 
-template <int N> void NtupleInfo<N>::Assign(TChain* fin, bool doublePrecision,bool withNcount){
-  AssignNoAlpha(fin,doublePrecision,withNcount);
+template <int N> void NtupleInfo<N>::Assign(TChain* fin, bool doublePrecision,bool withNcount,bool withMinlo){
+  AssignNoAlpha(fin,doublePrecision,withNcount,withMinlo);
   fin->SetBranchAddress("alphas" ,&alphas);
 }
 
 
-template <int N> void NtupleInfo<N>::AssignNoAlpha(TChain* fin,bool doublePrecision,bool withNcount){
+template <int N> void NtupleInfo<N>::AssignNoAlpha(TChain* fin,bool doublePrecision,bool withNcount,bool withMinlo){
 
 	fin->SetBranchAddress("id",&id);
 	if (!doublePrecision){
@@ -56,6 +56,12 @@ template <int N> void NtupleInfo<N>::AssignNoAlpha(TChain* fin,bool doublePrecis
 
 	fin->SetBranchAddress("nuwgt" ,&numgt);
 	fin->SetBranchAddress("usr_wgts" ,usr_wgts);
+
+	if (withMinlo){
+		fin->SetBranchAddress("id1p",&id1p);
+		fin->SetBranchAddress("id2p",&id2p);
+	}
+
 }
 
 template <int N> void NtupleInfo<N>::print(std::ostream& os){
@@ -97,7 +103,7 @@ template <int N> void NtupleInfo<N>::print(std::ostream& os){
 
 }
 
-template void NtupleInfo<MAX_NBR_PARTICLES>::Assign(TChain* fin,bool,bool);
-template void NtupleInfo<MAX_NBR_PARTICLES>::AssignNoAlpha(TChain* fin,bool,bool);
+template void NtupleInfo<MAX_NBR_PARTICLES>::Assign(TChain* fin,bool,bool,bool);
+template void NtupleInfo<MAX_NBR_PARTICLES>::AssignNoAlpha(TChain* fin,bool,bool,bool);
 template void NtupleInfo<MAX_NBR_PARTICLES>::print(std::ostream& os);
 

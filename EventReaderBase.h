@@ -13,6 +13,7 @@ class RootFileReaderBase  {
 	long d_lastID;
 	long d_startTrueEvent;
 	long d_maxTrueEvent;
+        int d_version;
 	NtupleInfo<MAX_NBR_PARTICLES>* d_storage;
  protected:
 	TChain* d_fin ;
@@ -80,8 +81,10 @@ public:
 	 * */
 	void addFiles(NtupleInfo<MAX_NBR_PARTICLES>& NI,std::vector<std::string> fileNames);
 
-	//! initialises the reader
-	void init(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName="t3",bool doublePrecision=false,bool withNcount=false);
+        //! returns the nTuple file version
+        int getVersion(){return d_version;}
+  	//! initialises the reader
+	void init(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName="t3",bool doublePrecision=false,bool withNcount=false,bool withMinlo=false);
 
 	virtual ~RootFileReaderBase();
 

@@ -32,6 +32,7 @@ template <int N> struct NtupleInfo {
 	int kf[N];
 	int nparticle;
 	int id1,id2;
+	int id1p,id2p;
 	double x1,x2;
 	double x1p,x2p;
 	double me_wgt,me_wgt2;
@@ -41,8 +42,8 @@ template <int N> struct NtupleInfo {
   bool hasDoublePrecisionMomenta;
   int ncount;
   enum { maxNbrParticles=N };
-  virtual void Assign(TChain* t,bool doublePrecision=false,bool withNcount=false);
-  virtual void AssignNoAlpha(TChain* t,bool doublePrecision=false,bool withNcount=false);
+  virtual void Assign(TChain* t,bool doublePrecision=false,bool withNcount=false,bool withMinlo=false);
+  virtual void AssignNoAlpha(TChain* t,bool doublePrecision=false,bool withNcount=false,bool withMinlo=false);
 	void print(std::ostream& os);
 };
 
