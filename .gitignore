@@ -36,3 +36,4 @@ Makefile.in
 /html
 
 /m4
+.buildconfig
