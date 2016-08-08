@@ -17,6 +17,12 @@ bool nTupleHasNcount(int version){
 bool nTupleHasMinlo(int version){
 	return  ( ( version & WITH_MINLO ) == WITH_MINLO  );
 }
+bool nTupleHasHadron1(int version){
+	return  ( ( version & WITH_HADRON1 ) == WITH_HADRON1  );
+}
+bool nTupleHasHadron2(int version){
+	return  ( ( version & WITH_HADRON2 ) == WITH_HADRON2  );
+}
 
 int nTupleVersion(const std::string& filename){
   int version=0;
@@ -44,6 +50,19 @@ int nTupleVersion(const std::string& filename){
   if (t->FindBranch("id1p")){
     version |= WITH_MINLO;
   }
+
+  if (t->FindBranch("id1") and t->FindBranch("x1")){
+    version |= WITH_HADRON1;
+  }
+  if (t->FindBranch("id2") and t->FindBranch("x2")){
+    version |= WITH_HADRON2;
+  }
+
+  if (t->FindBranch("nuwgt") and t->FindBranch("usr_wgts")){
+    version |= WITH_USERWEIGHTS;
+  }
+
+
   std::cout << "Version " << version << std::endl;
   f.Close();
   return version;

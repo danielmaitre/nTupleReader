@@ -27,30 +27,25 @@ void RootFileReaderBase::initStorage(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std
   if (!d_initialised){
     d_version=nTupleVersion(fileName);
     string treeName;
-    bool doublePrecision,withNcount,withMinlo;
     if ( nTupleHasNewTree(d_version)  ){
       treeName=std::string("BHSntuples");
     } else {
       treeName=std::string("t3");
     }
     if ( nTupleHasDoublePrecision(d_version) ){
-      doublePrecision=true;
       std::cout << "Using double precision momenta..." << std::endl;
     } else {
       std::cout << "Using simple precision momenta..." <<  std::endl;
-      doublePrecision=false;
     }
     if ( nTupleHasNcount(d_version) ){
-      withNcount=true;
+
     } else {
-      withNcount=false;
+
     }
     if ( nTupleHasMinlo(d_version) ){
-      withMinlo=true;
     } else {
-      withMinlo=false;
     }
-    init(NI,treeName.c_str(),doublePrecision,withNcount,withMinlo);
+    init(NI,treeName.c_str(),d_version);
   }
 }
 
@@ -85,7 +80,7 @@ RootFileReaderBase::RootFileReaderBase(): d_fin(0){
 	d_startTrueEvent=0;
 }
 
-RootFileReaderBase::RootFileReaderBase(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName,bool doublePrecision,bool withNcount){
+RootFileReaderBase::RootFileReaderBase(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName,int version){
   //init(NI,treeName.c_str(),doublePrecision,withNcount);
 	d_startEvent=0;
 	//no files are loaded so far
@@ -98,10 +93,10 @@ RootFileReaderBase::RootFileReaderBase(NtupleInfo<MAX_NBR_PARTICLES>& NI,const s
 	d_storage=&NI;
 }
 
-void RootFileReaderBase::init(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName,bool doublePrecision,bool withNcount,bool withMinlo){
+void RootFileReaderBase::init(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName,int version){
 	d_fin = new TChain(treeName.c_str());
 
-	NI.Assign(d_fin,doublePrecision,withNcount,withMinlo);
+	NI.Assign(d_fin,version);
 
 }
 

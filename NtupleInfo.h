@@ -42,8 +42,8 @@ template <int N> struct NtupleInfo {
   bool hasDoublePrecisionMomenta;
   int ncount;
   enum { maxNbrParticles=N };
-  virtual void Assign(TChain* t,bool doublePrecision=false,bool withNcount=false,bool withMinlo=false);
-  virtual void AssignNoAlpha(TChain* t,bool doublePrecision=false,bool withNcount=false,bool withMinlo=false);
+  virtual void Assign(TChain* t,int version);
+  virtual void AssignNoAlpha(TChain* t,int version);
 	void print(std::ostream& os);
 };
 
