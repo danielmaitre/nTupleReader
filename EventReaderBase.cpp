@@ -26,12 +26,6 @@ using namespace std;
 void RootFileReaderBase::initStorage(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& fileName){
   if (!d_initialised){
     d_version=nTupleVersion(fileName);
-    string treeName;
-    if ( nTupleHasNewTree(d_version)  ){
-      treeName=std::string("BHSntuples");
-    } else {
-      treeName=std::string("t3");
-    }
     if ( nTupleHasDoublePrecision(d_version) ){
       std::cout << "Using double precision momenta..." << std::endl;
     } else {
@@ -78,6 +72,7 @@ RootFileReaderBase::RootFileReaderBase(): d_fin(0){
 	resetEventCounter();
 	d_maxTrueEvent=0;
 	d_startTrueEvent=0;
+	d_initialised=false;
 }
 
 RootFileReaderBase::RootFileReaderBase(NtupleInfo<MAX_NBR_PARTICLES>& NI,int version){

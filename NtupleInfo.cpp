@@ -68,6 +68,8 @@ template <int N> void NtupleInfo<N>::AssignNoAlpha(TChain* fin,int version){
 	if ( nTupleHasUserWeights(version) ){
 		fin->SetBranchAddress("nuwgt" ,&numgt);
 		fin->SetBranchAddress("usr_wgts" ,usr_wgts);
+	} else {
+		numgt=0;  // this is important so that loops over the user weights are correct
 	}
 	if (withMinlo){
 		fin->SetBranchAddress("id1p",&id1p);

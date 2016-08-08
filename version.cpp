@@ -23,6 +23,9 @@ bool nTupleHasHadron1(int version){
 bool nTupleHasHadron2(int version){
 	return  ( ( version & WITH_HADRON2 ) == WITH_HADRON2  );
 }
+bool nTupleHasUserWeights(int version){
+	return  ( ( version & WITH_USERWEIGHTS ) == WITH_USERWEIGHTS  );
+}
 
 int nTupleVersion(const std::string& filename){
   int version=0;
