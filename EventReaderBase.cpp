@@ -45,7 +45,7 @@ void RootFileReaderBase::initStorage(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std
     if ( nTupleHasMinlo(d_version) ){
     } else {
     }
-    init(NI,treeName.c_str(),d_version);
+    init(NI,d_version);
   }
 }
 
@@ -80,7 +80,7 @@ RootFileReaderBase::RootFileReaderBase(): d_fin(0){
 	d_startTrueEvent=0;
 }
 
-RootFileReaderBase::RootFileReaderBase(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName,int version){
+RootFileReaderBase::RootFileReaderBase(NtupleInfo<MAX_NBR_PARTICLES>& NI,int version){
   //init(NI,treeName.c_str(),doublePrecision,withNcount);
 	d_startEvent=0;
 	//no files are loaded so far
@@ -93,9 +93,12 @@ RootFileReaderBase::RootFileReaderBase(NtupleInfo<MAX_NBR_PARTICLES>& NI,const s
 	d_storage=&NI;
 }
 
-void RootFileReaderBase::init(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName,int version){
-	d_fin = new TChain(treeName.c_str());
-
+void RootFileReaderBase::init(NtupleInfo<MAX_NBR_PARTICLES>& NI,int version){
+	if ( nTupleHasNewTree(d_version)  ){
+		d_fin = new TChain("BHSntuples");
+	} else {
+		d_fin = new TChain("BHSntuples");
+	}
 	NI.Assign(d_fin,version);
 
 }

@@ -22,7 +22,7 @@ public:
 	//! Constructor
 	RootFileReaderBase();
 	//! Constructor
-	RootFileReaderBase(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName,int version);
+	RootFileReaderBase(NtupleInfo<MAX_NBR_PARTICLES>& NI,int version);
 	/** Reads the next entry and returns true in case of success, false otherwise
 	(including reaching the end of the file).*/
 	bool readNextEntry(NtupleInfo<MAX_NBR_PARTICLES>& NI);
@@ -84,7 +84,7 @@ public:
         //! returns the nTuple file version
         int getVersion(){return d_version;}
   	//! initialises the reader
-	void init(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& treeName,int version);
+	void init(NtupleInfo<MAX_NBR_PARTICLES>& NI,int version);
 
 	virtual ~RootFileReaderBase();
 
