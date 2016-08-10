@@ -92,7 +92,7 @@ void RootFileReaderBase::init(NtupleInfo<MAX_NBR_PARTICLES>& NI,int version){
 	if ( nTupleHasNewTree(d_version)  ){
 		d_fin = new TChain("BHSntuples");
 	} else {
-		d_fin = new TChain("BHSntuples");
+		d_fin = new TChain("t3");
 	}
 	NI.Assign(d_fin,version);
 
