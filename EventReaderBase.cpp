@@ -149,4 +149,7 @@ void RootFileReaderBase::setMaxEvent(long count){
 	d_endEvent=nEntries;
 };
 
+bool RootFileReaderBase::hasNcount(){
+	return nTupleHasNcount(d_version);
+};
 

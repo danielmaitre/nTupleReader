@@ -86,6 +86,9 @@ public:
   	//! initialises the reader
 	void init(NtupleInfo<MAX_NBR_PARTICLES>& NI,int version);
 
+	//! return true if the file has nCount information
+	bool hasNcount();
+
 	virtual ~RootFileReaderBase();
 
 private:

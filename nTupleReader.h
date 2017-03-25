@@ -145,6 +145,7 @@ and `R' for the subtracted real emission.
 	void resetCrossSection();
 	double getCrossSection();
 	double getCrossSectionError();
+        nTupleReader_impl* get_impl(){return d_impl;};
 
 
 #ifdef LHAPDF_NEW_VERSION
