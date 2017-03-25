@@ -123,7 +123,7 @@ endif
 
 bin_SCRIPTS=nTupleReader-config
 
-pkginclude_HEADERS = nTupleReader.h EventReaderBase.h NtupleInfo.h pdf.h weightFunctions.h InfoStruct.h version.h
+pkginclude_HEADERS = nTupleReader.h EventReaderBase.h NtupleInfo.h pdf.h weightFunctions.h InfoStruct.h version.h nTupleReader_impl.h
 
 @DX_RULES@
 
