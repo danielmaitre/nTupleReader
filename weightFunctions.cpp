@@ -143,6 +143,27 @@ double computeRealWeightWithProperStat(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev
 	return computeRealWeightWithProperStat(ADDPDFARG3(Ev,newFacScale,alphaFactor));
 }
 
+
+double computeWithLogCoefficientsAF(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double newRenScale,double alphaFactor)){
+	double L=log(newRenScale);
+	double Ltothen=1.0;
+	double total=0.0;
+	for (int mui=0;mui<Ev.nwgts;mui++){
+		double newPdfWgt = Pdf::pdf(ADDPDFARG4(Ev.x1s[mui],newFacScale,Ev.id1s[mui],Pdf::initialState::s_id1))*Pdf::pdf(ADDPDFARG4(Ev.x2s[mui],newFacScale,Ev.id2s[mui],Pdf::initialState::s_id2)) ;
+		total+=Ev.wgts[mui]*Ltothen*newPdfWgt;
+		Ltothen*=L;
+	}
+	return total*alphaFactor;
+}
+
+double computeWithLogCoefficients(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double newRenScale,int alphasPower)){
+	double alphaFactor=computeAlphaFactor(ADDPDFARG3(Ev,newRenScale,alphasPower));
+	double newAlpha=pdf->alphasQ(newRenScale);
+	double alphasFactor = std::pow(newAlpha,alphasPower);
+	return alphasFactor*computeWithLogCoefficientsAF(ADDPDFARG4(Ev,newFacScale,newRenScale,alphaFactor));
+}
+
+
 #else
 
 double computeAlphaFactor(NtupleInfo<MAX_NBR_PARTICLES>& NI,double newScale,int alphasPower) {

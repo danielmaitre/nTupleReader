@@ -25,6 +25,7 @@ template <int N> void NtupleInfo<N>::AssignNoAlpha(TChain* fin,int version){
 	bool withMinlo=nTupleHasMinlo(version);
 	bool withHadron1=nTupleHasHadron1(version);
 	bool withHadron2=nTupleHasHadron2(version);
+	bool isNNLO=nTupleHasLogCoefficients(version);
 
 	fin->SetBranchAddress("id",&id);
 	if (!doublePrecision){
@@ -54,15 +55,21 @@ template <int N> void NtupleInfo<N>::AssignNoAlpha(TChain* fin,int version){
 	if (withHadron1){
 		fin->SetBranchAddress("id1",&id1);
 		fin->SetBranchAddress("x1",&x1);
-		fin->SetBranchAddress("x1p",&x1p);
+		if (! isNNLO){
+			fin->SetBranchAddress("x1p",&x1p);
+		}
 	}
 	if (withHadron2){
 		fin->SetBranchAddress("id2",&id2);
 		fin->SetBranchAddress("x2",&x2);
-		fin->SetBranchAddress("x2p",&x2p);
+		if (! isNNLO){
+			fin->SetBranchAddress("x2p",&x2p);
+		}
 	}
-	fin->SetBranchAddress("me_wgt" ,&me_wgt);
-	fin->SetBranchAddress("me_wgt2" ,&me_wgt2);
+	if (! isNNLO){
+		fin->SetBranchAddress("me_wgt" ,&me_wgt);
+		fin->SetBranchAddress("me_wgt2" ,&me_wgt2);
+	}
 	fin->SetBranchAddress("fac_scale" ,&muF);
 	fin->SetBranchAddress("ren_scale" ,&muR);
 	if ( nTupleHasUserWeights(version) ){
@@ -75,6 +82,17 @@ template <int N> void NtupleInfo<N>::AssignNoAlpha(TChain* fin,int version){
 		fin->SetBranchAddress("id1p",&id1p);
 		fin->SetBranchAddress("id2p",&id2p);
 	}
+
+	if (isNNLO){
+		fin->SetBranchAddress("id1s",&id1s);
+		fin->SetBranchAddress("id2s",&id2s);
+		fin->SetBranchAddress("x1s",&x1s);
+		fin->SetBranchAddress("x2s",&x2s);
+		fin->SetBranchAddress("logmupower",&logmupower);
+		fin->SetBranchAddress("wgts",&wgts);
+		fin->SetBranchAddress("nwgts",&nwgts);
+	}
+
 
 }
 

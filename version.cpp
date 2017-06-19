@@ -26,7 +26,9 @@ bool nTupleHasHadron2(int version){
 bool nTupleHasUserWeights(int version){
 	return  ( ( version & WITH_USERWEIGHTS ) == WITH_USERWEIGHTS  );
 }
-
+bool nTupleHasLogCoefficients(int version){
+	return  ( ( version & WITH_LOGCOEFFICIENTS ) == WITH_LOGCOEFFICIENTS  );
+}
 int nTupleVersion(const std::string& filename){
   int version=0;
   TFile f(filename.c_str(),"READONLY");
@@ -63,6 +65,10 @@ int nTupleVersion(const std::string& filename){
 
   if (t->FindBranch("nuwgt") and t->FindBranch("usr_wgts")){
     version |= WITH_USERWEIGHTS;
+  }
+
+  if (t->FindBranch("wgts") and t->FindBranch("logmupower")){
+    version |= WITH_LOGCOEFFICIENTS;
   }
 
 

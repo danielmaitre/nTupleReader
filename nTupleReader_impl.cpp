@@ -17,6 +17,7 @@
 #include "TLeaf.h"
 #include "TList.h"
 #include "TFile.h"
+#include "version.h"
 #ifdef USE_HEPMC
 #include "HepMC/GenEvent.h"
 using namespace HepMC;
@@ -115,11 +116,15 @@ double nTupleReader_impl::computeWeight(double newFacScale,double newRenScale){
 		//std::cout <<  d_alphasPower << d_alphasPowerChar << std::endl;
 	}
 #ifdef LHAPDF_NEW_VERSION
-	switch ( getType() ){
-	case 'B': return computeBornWeight(d_NI,newFacScale,newRenScale,getAlphasPower(),d_pdf);
-	case 'I':  return computeVsubWeight(d_NI,newFacScale,newRenScale,getAlphasPower(),d_pdf);
-	case 'V': case 'L': return computeLoopWeight(d_NI,newFacScale,newRenScale,getAlphasPower(),d_pdf);
-	case 'R': return computeBornWeight(d_NI,newFacScale,newRenScale,getAlphasPower(),d_pdf);
+	if (nTupleHasLogCoefficients(getVersion())){
+
+	} else {
+		switch ( getType() ){
+		case 'B': return computeBornWeight(d_NI,newFacScale,newRenScale,getAlphasPower(),d_pdf);
+		case 'I':  return computeVsubWeight(d_NI,newFacScale,newRenScale,getAlphasPower(),d_pdf);
+		case 'V': case 'L': return computeLoopWeight(d_NI,newFacScale,newRenScale,getAlphasPower(),d_pdf);
+		case 'R': return computeBornWeight(d_NI,newFacScale,newRenScale,getAlphasPower(),d_pdf);
+		}
 	}
 #else
 	switch ( getType() ){

@@ -33,6 +33,8 @@
 #define ADDPDFARG4(d1,d2,d3,d4) d1,d2,d3,d4
 #endif
 
+double computeWithLogCoefficients(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double newRenScale,int alphasPower));
+double computeWithLogCoefficientsAF(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double newRenScale,double alphaFactor));
 
 double computeBornWeight(ADDPDF3(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double alphaFactor));
 double computeBornWeight(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double newRenScale,int alphasPower));

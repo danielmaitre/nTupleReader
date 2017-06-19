@@ -38,7 +38,18 @@ template <int N> struct NtupleInfo {
 	double me_wgt,me_wgt2;
 	int numgt;
 	double usr_wgts[18];
-  double alphas;
+
+	int nwgts;
+
+	double wgts[5];
+	double id1s[5];
+	double id2s[5];
+	double x1s[5];
+	double x2s[5];
+	int logmupower[5];
+
+
+	double alphas;
   bool hasDoublePrecisionMomenta;
   int ncount;
   enum { maxNbrParticles=N };
