@@ -149,7 +149,7 @@ double computeWithLogCoefficientsAF(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,do
 	double Ltothen=1.0;
 	double total=0.0;
 	for (int mui=0;mui<Ev.nwgts;mui++){
-		double newPdfWgt = Pdf::pdf(ADDPDFARG4(Ev.x1s[mui],newFacScale,Ev.id1s[mui],Pdf::initialState::s_id1))*Pdf::pdf(ADDPDFARG4(Ev.x2s[mui],newFacScale,Ev.id2s[mui],Pdf::initialState::s_id2)) ;
+		double newPdfWgt = Pdf::pdfConvolution(ADDPDFARG7(Ev.x1s[mui],Ev.x2s[mui],newFacScale,Ev.id1s[mui],Ev.id2s[mui],Pdf::initialState::s_id1,Pdf::initialState::s_id2)) ;
 		total+=Ev.wgts[mui]*Ltothen*newPdfWgt;
 		Ltothen*=L;
 	}

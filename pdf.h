@@ -43,10 +43,10 @@ struct pdfArray {
 
 double pdf(const pdfArray& X, int PDGcode,int initialState);
 
-
 // works for u,d,s,c,b,t,g
 #ifdef LHAPDF_NEW_VERSION
 double pdf(double x, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF);
+double pdfConvolution(double x1, double x2, double Q, int PDGcode1, int PDGcode2,int initialState1, int initialState2,LHAPDF::PDF* PDF);
 double pdf_vsub1(double x, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF);
 double pdf_vsub2(double x, double xp, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF);
 double pdf_vsub3(double x, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF);

@@ -21,6 +21,7 @@
 #define ADDPDFARG2(d1,d2) d1,d2,pdf
 #define ADDPDFARG3(d1,d2,d3) d1,d2,d3,pdf
 #define ADDPDFARG4(d1,d2,d3,d4) d1,d2,d3,d4,pdf
+#define ADDPDFARG7(d1,d2,d3,d4,d5,d6,d7) d1,d2,d3,d4,d5,d6,d7,pdf
 #else
 #define ADDPDF(d1) d1
 #define ADDPDF2(d1,d2) d1,d2

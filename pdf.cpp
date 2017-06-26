@@ -1,6 +1,7 @@
 #include "pdf.h"
 #include "LHAPDF/LHAPDF.h"
 #include <iostream>
+#include <numeric>
 
 using namespace std;
 
@@ -34,6 +35,8 @@ void initialState::setInitialState(int id1,int id2){
 // works for u,d,s,c,b,t,g
 #ifdef LHAPDF_NEW_VERSION
 double pdf(double x, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF){
+
+	if (abs(PDGcode)<22){
 	int id;
 	if ( initialState == 1 ){
 		id=(PDGcode%21);
@@ -41,7 +44,48 @@ double pdf(double x, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF){
 		id=-(PDGcode%21);
 	}
 	return PDF->xfxQ(id,x,Q)/x;
+	} else {
+		// these are special combinations for NNLO ntuples
+		vector<double> xfs; xfs.resize(13);
+		PDF->xfxQ(x, Q, xfs);
+		switch(PDGcode){
+			case  51: return std::accumulate(xfs.begin()+7,xfs.end(),0.0)/(5.0*x);
+			case  59: return std::accumulate(xfs.begin(),xfs.begin()+6,0.0)/(5.0*x);
+			case  10: return (std::accumulate(xfs.begin(),xfs.end(),0.0)-xfs[6])/(10.0*x);
+		}
+
+	}
 }
+
+
+double pdfConvolution(double x1,double x2, double Q, int PDGcode1,int PDGcode2,int initialState1,int initialState2,LHAPDF::PDF* PDF){
+	int code=PDGcode1*100+PDGcode2;
+
+	switch (code) {
+	case 5252: break;
+	case 5258: break;
+	case 5852: break;
+	case 5858: break;
+	default: return pdf(x1,Q,PDGcode1,initialState1,PDF)*pdf(x2,Q,PDGcode2,initialState2,PDF);
+	}
+	vector<double> xfs1,xfs2;
+	xfs1.resize(13);
+	xfs2.resize(13);
+	PDF->xfxQ(x1, Q, xfs1);
+	PDF->xfxQ(x2, Q, xfs2);
+	double res=0;
+	for (int ii=0;ii<6;ii++){
+		switch (code) {
+		case 5252: res+=xfs1[ii+7]*xfs2[ii+7]; break;
+		case 5258: res+=xfs1[ii+7]*xfs2[5-ii]; break;
+		case 5852: res+=xfs1[5-ii]*xfs2[ii+7]; break;
+		case 5858: res+=xfs1[5-ii]*xfs2[5-ii]; break;
+		}
+	}
+	return res/(5.0*x1*x2);
+
+}
+
 
 double pdf(double x, double Q, int PDGcode,int initialState){
 	return pdf(x,Q,PDGcode,initialState,current::s_PDF);
