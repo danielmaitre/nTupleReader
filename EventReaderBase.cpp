@@ -104,7 +104,27 @@ long RootFileReaderBase::getNumberOfEntries(){return (long)d_fin->GetEntries();}
 
 RootFileReaderBase::~RootFileReaderBase(){ delete d_fin;}
 
+void RootFileReaderBase::transferFromCache(NtupleInfo<MAX_NBR_PARTICLES>& NI){
+	bool doublePrecision=nTupleHasDoublePrecision(d_version);
+	for (int ii=0;ii<NI.nparticle;ii++){
+		if (doublePrecision){
+			NI.pxD[ii]=NI.pxDCache[ii];
+			NI.pyD[ii]=NI.pyDCache[ii];
+			NI.pzD[ii]=NI.pzDCache[ii];
+			NI.ED[ii]=NI.EDCache[ii];
+		} else {
+			NI.px[ii]=NI.pxCache[ii];
+			NI.py[ii]=NI.pyCache[ii];
+			NI.pz[ii]=NI.pzCache[ii];
+			NI.E[ii]=NI.ECache[ii];
+		}
+		NI.kf[ii]=NI.kfCache[ii];
+		NI.nparticle=NI.nparticleCache;
+	}
+}
+
 bool RootFileReaderBase::readNextEntry(NtupleInfo<MAX_NBR_PARTICLES>& NI){
+	bool isNNLO=nTupleHasLogCoefficients(d_version);
 	while (d_iEntry < d_endEvent){
 	    if (d_fin->GetEntry(d_iEntry)==0){
 	    	//happens if entry cannot be read
@@ -117,6 +137,11 @@ bool RootFileReaderBase::readNextEntry(NtupleInfo<MAX_NBR_PARTICLES>& NI){
 		}
 		if (d_startTrueEvent>=0 && d_iEvent < d_startTrueEvent ){
 			continue;
+		}
+		if (isNNLO){
+			if (NI.nparticleCache!=0){
+				transferFromCache(NI);
+			}
 		}
 		return true;
 	}

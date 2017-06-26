@@ -94,6 +94,7 @@ public:
 private:
 	void resetEventCounter(){d_iEvent=0;d_lastID=-1;};
 	void initStorage(NtupleInfo<MAX_NBR_PARTICLES>& NI,const std::string& fileName );
+	void transferFromCache(NtupleInfo<MAX_NBR_PARTICLES>& NI);
 };
 
 

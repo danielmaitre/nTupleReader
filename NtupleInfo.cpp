@@ -28,19 +28,43 @@ template <int N> void NtupleInfo<N>::AssignNoAlpha(TChain* fin,int version){
 	bool isNNLO=nTupleHasLogCoefficients(version);
 
 	fin->SetBranchAddress("id",&id);
-	if (!doublePrecision){
-	  fin->SetBranchAddress("px",px);
-	  fin->SetBranchAddress("py",py);
-	  fin->SetBranchAddress("pz",pz);
-	  fin->SetBranchAddress("E" ,E);
-	  hasDoublePrecisionMomenta=false;
-	} else {
-	  fin->SetBranchAddress("px",pxD);
-	  fin->SetBranchAddress("py",pyD);
-	  fin->SetBranchAddress("pz",pzD);
-	  fin->SetBranchAddress("E" ,ED);
-	  hasDoublePrecisionMomenta=true;
+	if (! isNNLO){
+
+		if (!doublePrecision){
+		  fin->SetBranchAddress("px",px);
+		  fin->SetBranchAddress("py",py);
+		  fin->SetBranchAddress("pz",pz);
+		  fin->SetBranchAddress("E" ,E);
+		  hasDoublePrecisionMomenta=false;
+		} else {
+		  fin->SetBranchAddress("px",pxD);
+		  fin->SetBranchAddress("py",pyD);
+		  fin->SetBranchAddress("pz",pzD);
+		  fin->SetBranchAddress("E" ,ED);
+		  hasDoublePrecisionMomenta=true;
+		}
+		fin->SetBranchAddress("kf" ,kf);
+		fin->SetBranchAddress("nparticle", &nparticle);
 	}
+	else {
+		if (!doublePrecision){
+		  fin->SetBranchAddress("px",pxCache);
+		  fin->SetBranchAddress("py",pyCache);
+		  fin->SetBranchAddress("pz",pzCache);
+		  fin->SetBranchAddress("E" ,ECache);
+		  hasDoublePrecisionMomenta=false;
+		} else {
+		  fin->SetBranchAddress("px",pxDCache);
+		  fin->SetBranchAddress("py",pyDCache);
+		  fin->SetBranchAddress("pz",pzDCache);
+		  fin->SetBranchAddress("E" ,EDCache);
+		  hasDoublePrecisionMomenta=true;
+		}
+		fin->SetBranchAddress("kf" ,kfCache);
+		fin->SetBranchAddress("nparticle", &nparticleCache);
+
+	}
+
 	if (withNcount){
 	  fin->SetBranchAddress("ncount" ,&ncount);
 	} else {
@@ -49,8 +73,6 @@ template <int N> void NtupleInfo<N>::AssignNoAlpha(TChain* fin,int version){
 
 	fin->SetBranchAddress("weight" ,&wgt);
 	fin->SetBranchAddress("weight2" ,&wgt2);
-	fin->SetBranchAddress("kf" ,kf);
-	fin->SetBranchAddress("nparticle", &nparticle);
 
 	if (withHadron1){
 		fin->SetBranchAddress("id1",&id1);

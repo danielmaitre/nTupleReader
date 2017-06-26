@@ -42,12 +42,22 @@ template <int N> struct NtupleInfo {
 	int nwgts;
 
 	double wgts[5];
-	double id1s[5];
-	double id2s[5];
+	int id1s[5];
+	int id2s[5];
 	double x1s[5];
 	double x2s[5];
 	int logmupower[5];
 
+	float pxCache[N];
+	float pyCache[N];
+	float pzCache[N];
+	float ECache[N];
+	double pxDCache[N];
+	double pyDCache[N];
+	double pzDCache[N];
+	double EDCache[N];
+	int kfCache[N];
+	int nparticleCache;
 
 	double alphas;
   bool hasDoublePrecisionMomenta;
