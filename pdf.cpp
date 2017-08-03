@@ -10,6 +10,8 @@ namespace Pdf {
 int initialState::s_id1=1;
 int initialState::s_id2=1;
 
+initialState::channel initialState::s_channel=initialState::all;
+
 #ifdef LHAPDF_NEW_VERSION
 
 LHAPDF::PDF* current::s_PDF=0;
@@ -31,12 +33,30 @@ void initialState::setInitialState(int id1,int id2){
 	initialState::s_id2=id2;
 };
 
+void initialState::setChannel(initialState::channel chan){
+	initialState::s_channel=chan;
+};
+
+initialState::channel initialState::reverse(initialState::channel ch){
+	switch (ch){
+	case initialState::gg:   return initialState::gg;
+	case initialState::gq:   return initialState::qg;
+	case initialState::gqb:  return initialState::qbg;
+	case initialState::qg:   return initialState::gq;
+	case initialState::qbg:  return initialState::gqb;
+	case initialState::qq:   return initialState::qq;
+	case initialState::qqb:  return initialState::qbq;
+	case initialState::qbq:  return initialState::qqb;
+	case initialState::qbqb: return initialState::qbqb;
+	case all:                return initialState::all;
+	}
+};
 
 // works for u,d,s,c,b,t,g
 #ifdef LHAPDF_NEW_VERSION
 double pdf(double x, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF){
 
-	if (abs(PDGcode)<22){
+	if (abs(PDGcode)<22 && PDGcode!=10){
 	int id;
 	if ( initialState == 1 ){
 		id=(PDGcode%21);
@@ -57,8 +77,86 @@ double pdf(double x, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF){
 	}
 }
 
+double getPDFsingleChannel(const Pdf::pdfArray& X,int PDGcode,int initialState,initialState::channel ch){
+	switch (PDGcode){
+	case 21: {
+		if ( not(   ch==initialState::gg
+				 or ch==initialState::gq
+			     or ch==initialState::gqb )
+				){
+			return 0.0;
+		} else {
+			return pdf(X,21,initialState);
+		}
+	} break;
+	case -5: case -4: case -3 : case -2 : case -1: {
+		if ( not(   ch==initialState::qbg
+				 or ch==initialState::qbq
+			     or ch==initialState::qbqb )
+				){
+			return 0.0;
+		} else {
+			return pdf(X,PDGcode,initialState);
+		}
+	} break;
+	case 1: case 2: case 3: case 4: case 5: {
+		if ( not(   ch==initialState::qg
+				 or ch==initialState::qq
+			     or ch==initialState::qqb )
+				){
+			return 0.0;
+		} else {
+			return pdf(X,PDGcode,initialState);
+		}
+	} break;
+	case 10: {
+		if ( not(   ch==initialState::qg
+				 or ch==initialState::qq
+			     or ch==initialState::qqb
+			     or ch==initialState::qbg
+			     or ch==initialState::qbq
+			     or ch==initialState::qbqb
+				 )
+				){
+			return 0.0;
+		} else {
+			if (  ch==initialState::qg
+					 or ch==initialState::qq
+				     or ch==initialState::qqb
+				     ){
+				// factor of 2 is to take into account that PDGcode=10 is normalised by 10 while 51 and 59 are normalised by 5
+				return pdf(X,51,initialState)/2;
+			} else {
+				return pdf(X,59,initialState)/2;
+			}
+		}
+	} break;
+	case 51: {
+		if (  ch==initialState::qg
+				or ch==initialState::qq
+				or ch==initialState::qqb
+		){
+				return pdf(X,51,initialState);
+			} else  {
+				return 0;
+			}
+	} break;
+	case 59: {
+		if (  ch==initialState::qbg
+				or ch==initialState::qbq
+				or ch==initialState::qbqb
+		){
+				return pdf(X,59,initialState);
+			} else  {
+				return 0;
+			}
+	} break;
 
-double pdfConvolution(double x1,double x2, double Q, int PDGcode1,int PDGcode2,int initialState1,int initialState2,LHAPDF::PDF* PDF){
+	}
+
+}
+
+double pdfConvolution(const Pdf::pdfArray &X1,const Pdf::pdfArray &X2, int PDGcode1,int PDGcode2,int initialState1,int initialState2){
 	int code=PDGcode1*100+PDGcode2;
 
 	switch (code) {
@@ -66,25 +164,70 @@ double pdfConvolution(double x1,double x2, double Q, int PDGcode1,int PDGcode2,i
 	case 5258: break;
 	case 5852: break;
 	case 5858: break;
-	default: return pdf(x1,Q,PDGcode1,initialState1,PDF)*pdf(x2,Q,PDGcode2,initialState2,PDF);
-	}
-	vector<double> xfs1,xfs2;
-	xfs1.resize(13);
-	xfs2.resize(13);
-	PDF->xfxQ(x1, Q, xfs1);
-	PDF->xfxQ(x2, Q, xfs2);
-	double res=0;
-	for (int ii=0;ii<6;ii++){
-		switch (code) {
-		case 5252: res+=xfs1[ii+7]*xfs2[ii+7]; break;
-		case 5258: res+=xfs1[ii+7]*xfs2[5-ii]; break;
-		case 5852: res+=xfs1[5-ii]*xfs2[ii+7]; break;
-		case 5858: res+=xfs1[5-ii]*xfs2[5-ii]; break;
+	default: {
+		//std::cout << "pdfconvo (" << PDGcode1 <<","<< PDGcode2 << "): pdf1: " << pdf(X1,PDGcode1,initialState1)<< " pdf2: " <<  pdf(X2,PDGcode2,initialState2) << std::endl;
+		if (initialState::s_channel==initialState::all){
+			return pdf(X1,PDGcode1,initialState1)*pdf(X2,PDGcode2,initialState2);
+		} else {
+
+			double pdf1=getPDFsingleChannel(X1,PDGcode1,initialState1,initialState::s_channel);
+			std::cout <<  PDGcode1 << ": " << pdf1 << std::endl;
+			if (pdf1==0.0){return 0.0;}
+			double pdf2=getPDFsingleChannel(X2,PDGcode2,initialState2,initialState::reverse(initialState::s_channel));
+			std::cout <<  PDGcode1 <<","<< PDGcode2 << ": " << pdf1<< " " << pdf2 << std::endl;
+			return pdf1*pdf2;
+
 		}
 	}
-	return res/(5.0*x1*x2);
+	}
+
+	double res=0;
+	switch (code) {
+	case 5252: {
+		if (!initialState::s_channel==initialState::qq) return 0.0;
+	}; break;
+	case 5258: {
+		if (!initialState::s_channel==initialState::qqb) return 0.0;
+	}; break;
+	case 5852: {
+		if (!initialState::s_channel==initialState::qbq) return 0.0;
+	}; break;
+	case 5858: {
+		if (!initialState::s_channel==initialState::qbqb) return 0.0;
+	}; break;
+
+	}
+
+	for (int ii=0;ii<6;ii++){
+		switch (code) {
+		case 5252: res+=X1[ii+7]*X2[ii+7]; break;
+		case 5258: res+=X1[ii+7]*X2[5-ii]; break;
+		case 5852: res+=X1[5-ii]*X2[ii+7]; break;
+		case 5858: res+=X1[5-ii]*X2[5-ii]; break;
+		}
+	}
+	return res/(5.0);
 
 }
+
+
+double pdfConvolution(double x1,double x2, double Q, int PDGcode1,int PDGcode2,int initialState1,int initialState2,LHAPDF::PDF* PDF){
+
+	static vector<double> xfs1(13),xfs2(13);
+	PDF->xfxQ(x1, Q, xfs1);
+	Pdf::pdfArray X1;
+	std::copy(xfs1.begin(),xfs1.end(),&X1.tbar);
+	Pdf::pdfArray X2;
+	PDF->xfxQ(x2, Q, xfs2);
+	std::copy(xfs2.begin(),xfs2.end(),&X2.tbar);
+
+	return pdfConvolution(X1,X2, PDGcode1, PDGcode2, initialState1, initialState2);
+
+}
+
+
+
+
 
 
 double pdf(double x, double Q, int PDGcode,int initialState){
@@ -253,12 +396,22 @@ void LHAComputePdf(double x,double Q,pdfArray& pa){
 
 
 double pdf(const pdfArray& X, int PDGcode,int initialState){
-	if (initialState == 1){
-		return X[6+(PDGcode%21)];
+	if (abs(PDGcode)<22 && PDGcode!=10){
+		if (initialState == 1){
+			return X[6+(PDGcode%21)];
+		} else {
+			return X[6-(PDGcode%21)];
+		}
 	} else {
-		return X[6-(PDGcode%21)];
+		switch(PDGcode){
+			case  51: return std::accumulate(&X.tbar+7,&X.t+1,0.0)/(5.0);
+			case  59: return std::accumulate(&X.tbar,&X.tbar+6,0.0)/(5.0);
+			case  10: return (std::accumulate(&X.tbar,&X.t+1,0.0)-X.gluon)/(10.0);
+		}
+
 	}
 };
+
 
 
 double pdf_vsub1(const pdfArray& X, int PDGcode,int initialState){

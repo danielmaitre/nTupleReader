@@ -25,14 +25,14 @@ double computeAlphaFactor(ADDPDF3(NtupleInfo<MAX_NBR_PARTICLES>& NI,double newSc
 
 
 double computeBornWeight(ADDPDF3(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double alphaFactor)){
-	double newPdfWgt = Pdf::pdf(ADDPDFARG4(Ev.x1,newFacScale,Ev.id1,Pdf::initialState::s_id1))*Pdf::pdf(ADDPDFARG4(Ev.x2,newFacScale,Ev.id2,Pdf::initialState::s_id2)) ;
+	double newPdfWgt = Pdf::pdfConvolution(ADDPDFARG7(Ev.x1,Ev.x2,newFacScale,Ev.id1,Ev.id2,Pdf::initialState::s_id1,Pdf::initialState::s_id2)) ;
 	return Ev.me_wgt*alphaFactor*newPdfWgt;
 };
 
 
 double computeBornWeight(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double newRenScale,int alphasPower)){
 	double alphaFactor=computeAlphaFactor(ADDPDFARG3(Ev,newRenScale,alphasPower));
-	double newPdfWgt = Pdf::pdf(ADDPDFARG4(Ev.x1,newFacScale,Ev.id1,Pdf::initialState::s_id1))*Pdf::pdf(ADDPDFARG4(Ev.x2,newFacScale,Ev.id2,Pdf::initialState::s_id2)) ;
+	double newPdfWgt = Pdf::pdfConvolution(ADDPDFARG7(Ev.x1,Ev.x2,newFacScale,Ev.id1,Ev.id2,Pdf::initialState::s_id1,Pdf::initialState::s_id2)) ;
 	return Ev.me_wgt*alphaFactor*newPdfWgt;
 }
 
@@ -43,7 +43,7 @@ double computeLoopWeight(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFac
 }
 
 double computeLoopWeight(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double newRenScale,double alphaFactor)){
-	double newPdfWgt = Pdf::pdf(ADDPDFARG4(Ev.x1,newFacScale,Ev.id1,Pdf::initialState::s_id1))*Pdf::pdf(ADDPDFARG4(Ev.x2,newFacScale,Ev.id2,Pdf::initialState::s_id2)) ;
+	double newPdfWgt = Pdf::pdfConvolution(ADDPDFARG7(Ev.x1,Ev.x2,newFacScale,Ev.id1,Ev.id2,Pdf::initialState::s_id1,Pdf::initialState::s_id2)) ;
 
 	double L=2.0*log(newRenScale/Ev.muR);
 	double res2=
@@ -79,7 +79,7 @@ double computeVsubWeight(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFac
 	double L=2.0*log(newRenScale/Ev.muR);
 	double LF=2.0*log(newFacScale/Ev.muF);
 
-	double res2=
+/*	double res2=
 		Pdf::pdf(X1,Ev.id1,Pdf::initialState::s_id1)*Pdf::pdf(X2,Ev.id2,Pdf::initialState::s_id2) *
 		(
 			Ev.me_wgt
@@ -99,6 +99,74 @@ double computeVsubWeight(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFac
 		+pdf_vsub3(X2,Ev.id2,Pdf::initialState::s_id2)*(Ev.usr_wgts[8]+Ev.usr_wgts[16]*LF)
 		+pdf_vsub4(X2overX2p,Ev.x2p,Ev.id2,Pdf::initialState::s_id2)*(Ev.usr_wgts[9]+Ev.usr_wgts[17]*LF)
 		)* Pdf::pdf(X1,Ev.id1,Pdf::initialState::s_id1) ;
+*/
+		double pdfconvo11=(Ev.id1==21?10.0:1.0)*Pdf::pdfConvolution(
+				X1,X2,(Ev.id1==21?10:Ev.id1),Ev.id2,Pdf::initialState::s_id1,Pdf::initialState::s_id2);
+
+		double pdfconvo12=(Ev.id1==21?10.0:1.0)*Pdf::pdfConvolution(
+				X1overX1p,X2,(Ev.id1==21?10:Ev.id1),Ev.id2,Pdf::initialState::s_id1,Pdf::initialState::s_id2)/Ev.x1p;
+
+		double pdfconvo13=Pdf::pdfConvolution(
+				X1,X2,21,Ev.id2,Pdf::initialState::s_id1,Pdf::initialState::s_id2);
+
+		double pdfconvo14=Pdf::pdfConvolution(
+				X1overX1p,X2,21,Ev.id2,Pdf::initialState::s_id1,Pdf::initialState::s_id2)/Ev.x1p;
+
+		double pdfconvo21=(Ev.id2==21?10.0:1.0)*Pdf::pdfConvolution(
+				X1,X2,Ev.id1,(Ev.id2==21?10:Ev.id2),Pdf::initialState::s_id1,Pdf::initialState::s_id2);
+
+		double pdfconvo22=(Ev.id2==21?10.0:1.0)*Pdf::pdfConvolution(
+				X1,X2overX2p,Ev.id1,(Ev.id2==21?10:Ev.id2),Pdf::initialState::s_id1,Pdf::initialState::s_id2)/Ev.x2p;
+
+		double pdfconvo23=Pdf::pdfConvolution(
+				X1,X2,Ev.id1,21,Pdf::initialState::s_id1,Pdf::initialState::s_id2);
+
+		double pdfconvo24=Pdf::pdfConvolution(
+				X1,X2overX2p,Ev.id1,21,Pdf::initialState::s_id1,Pdf::initialState::s_id2)/Ev.x2p;
+
+
+		double resConvo=
+				Pdf::pdfConvolution(X1,X2,Ev.id1,Ev.id2,Pdf::initialState::s_id1,Pdf::initialState::s_id2) *
+				(
+					Ev.me_wgt
+					+Ev.usr_wgts[0]*L
+					+0.5*Ev.usr_wgts[1]*L*L
+				)
+			 +
+				(
+				pdfconvo11*(Ev.usr_wgts[2]+Ev.usr_wgts[10]*LF)
+				+pdfconvo12*(Ev.usr_wgts[3]+Ev.usr_wgts[11]*LF)
+				+pdfconvo13*(Ev.usr_wgts[4]+Ev.usr_wgts[12]*LF)
+				+pdfconvo14*(Ev.usr_wgts[5]+Ev.usr_wgts[13]*LF)
+				) +
+				(
+				pdfconvo21*(Ev.usr_wgts[6]+Ev.usr_wgts[14]*LF)
+				+pdfconvo22*(Ev.usr_wgts[7]+Ev.usr_wgts[15]*LF)
+				+pdfconvo23*(Ev.usr_wgts[8]+Ev.usr_wgts[16]*LF)
+				+pdfconvo24*(Ev.usr_wgts[9]+Ev.usr_wgts[17]*LF)
+				);
+
+/*
+ 		double vsub11=pdf_vsub1(X1,Ev.id1,Pdf::initialState::s_id1)* Pdf::pdf(X2,Ev.id2,Pdf::initialState::s_id2);
+		double vsub12=pdf_vsub2(X1overX1p,Ev.x1p,Ev.id1,Pdf::initialState::s_id1)* Pdf::pdf(X2,Ev.id2,Pdf::initialState::s_id2);
+		double vsub13=pdf_vsub3(X1,Ev.id1,Pdf::initialState::s_id1)* Pdf::pdf(X2,Ev.id2,Pdf::initialState::s_id2);
+		double vsub14=pdf_vsub4(X1overX1p,Ev.x1p,Ev.id1,Pdf::initialState::s_id1)* Pdf::pdf(X2,Ev.id2,Pdf::initialState::s_id2);
+
+ 		std:: cout << "sub11:" << (pdfconvo11-vsub11)/(pdfconvo11+vsub11)<< std::endl;
+		std:: cout << "sub12:" << (pdfconvo12-vsub12)/(pdfconvo12+vsub12)<< std::endl;
+		std:: cout << "sub13:" << (pdfconvo13-vsub13)/(pdfconvo13+vsub13)<< std::endl;
+		std:: cout << "sub14:" << (pdfconvo14-vsub14)/(pdfconvo14+vsub14)<< std::endl;
+
+		std:: cout << "ratio:" << (res2-resConvo)/(res2+resConvo)<< std::endl;
+
+		std::cout <<
+				"vsub1:"
+		<< pdf_vsub1(X1,Ev.id1,Pdf::initialState::s_id1)* Pdf::pdf(X2,Ev.id2,Pdf::initialState::s_id2)
+		<<" = " << pdf_vsub1(X1,Ev.id1,Pdf::initialState::s_id1) << "*" << Pdf::pdf(X2,Ev.id2,Pdf::initialState::s_id2)
+		<< " convo: "
+		<< pdfconvo11
+		 << std::endl;
+		 */
 	/*
 		std::cout << "contributions to the new weight:" << std::endl;
 		std::cout << Pdf::pdf(X1,Ev.id1,Pdf::initialState::s_id1)*Pdf::pdf(X2,Ev.id2,Pdf::initialState::s_id2) *
@@ -120,11 +188,14 @@ double computeVsubWeight(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFac
 	
 	std::cout << "alphaFactor: " << alphaFactor << std::endl ; 
 	*/
-	return res2*alphaFactor;
+
+
+
+	return resConvo*alphaFactor;
 }
 
 double computeRealWeight(ADDPDF3(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double alphaFactor)){
-	double newPdfWgt = Pdf::pdf(ADDPDFARG4(Ev.x1,newFacScale,Ev.id1,Pdf::initialState::s_id1))*Pdf::pdf(ADDPDFARG4(Ev.x2,newFacScale,Ev.id2,Pdf::initialState::s_id2)) ;
+	double newPdfWgt = Pdf::pdfConvolution(ADDPDFARG7(Ev.x1,Ev.x2,newFacScale,Ev.id1,Ev.id2,Pdf::initialState::s_id1,Pdf::initialState::s_id2)) ;
 	return Ev.me_wgt*alphaFactor*newPdfWgt;
 }
 
@@ -134,7 +205,7 @@ double computeRealWeight(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFac
 }
 
 double computeRealWeightWithProperStat(ADDPDF3(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double alphaFactor)){
-	double newPdfWgt = Pdf::pdf(ADDPDFARG4(Ev.x1,newFacScale,Ev.id1,Pdf::initialState::s_id1))*Pdf::pdf(ADDPDFARG4(Ev.x2,newFacScale,Ev.id2,Pdf::initialState::s_id2)) ;
+	double newPdfWgt = Pdf::pdfConvolution(ADDPDFARG7(Ev.x1,Ev.x2,newFacScale,Ev.id1,Ev.id2,Pdf::initialState::s_id1,Pdf::initialState::s_id2)) ;
 	return Ev.me_wgt2*alphaFactor*newPdfWgt;
 }
 

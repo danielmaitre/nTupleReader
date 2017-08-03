@@ -17,6 +17,10 @@ struct initialState {
   static int s_id1;
   static int s_id2;
   static void setInitialState(int id1,int id2);
+  enum channel {all, gg , qg, gq , qbg, gqb, qq, qbq , qqb, qbqb};
+  static channel s_channel ;
+  static void setChannel(initialState::channel chan);
+  static channel reverse(channel);
 } ;
 
 
@@ -47,6 +51,7 @@ double pdf(const pdfArray& X, int PDGcode,int initialState);
 #ifdef LHAPDF_NEW_VERSION
 double pdf(double x, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF);
 double pdfConvolution(double x1, double x2, double Q, int PDGcode1, int PDGcode2,int initialState1, int initialState2,LHAPDF::PDF* PDF);
+double pdfConvolution(const pdfArray& X1,const pdfArray& X2, int PDGcode1, int PDGcode2,int initialState1, int initialState2);
 double pdf_vsub1(double x, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF);
 double pdf_vsub2(double x, double xp, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF);
 double pdf_vsub3(double x, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF);
