@@ -25,7 +25,9 @@ double computeAlphaFactor(ADDPDF3(NtupleInfo<MAX_NBR_PARTICLES>& NI,double newSc
 
 
 double computeBornWeight(ADDPDF3(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double alphaFactor)){
+	//double newPdfWgtold = Pdf::pdf(ADDPDFARG4(Ev.x1,newFacScale,Ev.id1,Pdf::initialState::s_id1))*Pdf::pdf(ADDPDFARG4(Ev.x2,newFacScale,Ev.id2,Pdf::initialState::s_id2)) ;
 	double newPdfWgt = Pdf::pdfConvolution(ADDPDFARG7(Ev.x1,Ev.x2,newFacScale,Ev.id1,Ev.id2,Pdf::initialState::s_id1,Pdf::initialState::s_id2)) ;
+	//std::cout << "old: " << newPdfWgtold << " new: " << newPdfWgt << std::endl;
 	return Ev.me_wgt*alphaFactor*newPdfWgt;
 };
 

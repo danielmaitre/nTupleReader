@@ -212,15 +212,9 @@ double pdfConvolution(const Pdf::pdfArray &X1,const Pdf::pdfArray &X2, int PDGco
 
 
 double pdfConvolution(double x1,double x2, double Q, int PDGcode1,int PDGcode2,int initialState1,int initialState2,LHAPDF::PDF* PDF){
-
-	static vector<double> xfs1(13),xfs2(13);
-	PDF->xfxQ(x1, Q, xfs1);
-	Pdf::pdfArray X1;
-	std::copy(xfs1.begin(),xfs1.end(),&X1.tbar);
-	Pdf::pdfArray X2;
-	PDF->xfxQ(x2, Q, xfs2);
-	std::copy(xfs2.begin(),xfs2.end(),&X2.tbar);
-
+	Pdf::pdfArray X1,X2;
+	LHAComputePdf(x1,Q,X1,PDF);
+	LHAComputePdf(x2,Q,X2,PDF);
 	return pdfConvolution(X1,X2, PDGcode1, PDGcode2, initialState1, initialState2);
 
 }
