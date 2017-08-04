@@ -171,10 +171,10 @@ double pdfConvolution(const Pdf::pdfArray &X1,const Pdf::pdfArray &X2, int PDGco
 		} else {
 
 			double pdf1=getPDFsingleChannel(X1,PDGcode1,initialState1,initialState::s_channel);
-			std::cout <<  PDGcode1 << ": " << pdf1 << std::endl;
+			//std::cout <<  PDGcode1 << ": " << pdf1 << std::endl;
 			if (pdf1==0.0){return 0.0;}
 			double pdf2=getPDFsingleChannel(X2,PDGcode2,initialState2,initialState::reverse(initialState::s_channel));
-			std::cout <<  PDGcode1 <<","<< PDGcode2 << ": " << pdf1<< " " << pdf2 << std::endl;
+			//std::cout <<  PDGcode1 <<","<< PDGcode2 << ": " << pdf1<< " " << pdf2 << std::endl;
 			return pdf1*pdf2;
 
 		}
