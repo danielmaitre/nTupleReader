@@ -219,12 +219,15 @@ double computeRealWeightWithProperStat(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev
 
 double computeWithLogCoefficientsAF(ADDPDF4(NtupleInfo<MAX_NBR_PARTICLES>& Ev,double newFacScale,double newRenScale,double alphaFactor)){
 	double L=log(newRenScale);
-	double Ltothen=1.0;
 	double total=0.0;
 	for (int mui=0;mui<Ev.nwgts;mui++){
 		double newPdfWgt = Pdf::pdfConvolution(ADDPDFARG7(Ev.x1s[mui],Ev.x2s[mui],newFacScale,Ev.id1s[mui],Ev.id2s[mui],Pdf::initialState::s_id1,Pdf::initialState::s_id2)) ;
-		total+=Ev.wgts[mui]*Ltothen*newPdfWgt;
-		Ltothen*=L;
+		//std::cout << "NNLO lumi: " << Ev.x1s[mui] << " " << Ev.x2s[mui] << " " << newPdfWgt << std::endl;
+		double term=Ev.wgts[mui]*newPdfWgt;
+		for (int i=0; i< Ev.logmupower[mui];i++){
+			term*=L;
+		}
+		total+=term;
 	}
 	return total*alphaFactor;
 }
