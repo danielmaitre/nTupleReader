@@ -41,12 +41,12 @@ template <int N> struct NtupleInfo {
 
 	int nwgts;
 
-	double wgts[100];
-	int id1s[100];
-	int id2s[100];
-	double x1s[100];
-	double x2s[100];
-	int logmupower[100];
+	double wgts[200];
+	int id1s[200];
+	int id2s[200];
+	double x1s[200];
+	double x2s[200];
+	int logmupower[200];
 
 	float pxCache[N];
 	float pyCache[N];
