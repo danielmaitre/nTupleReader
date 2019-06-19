@@ -157,13 +157,18 @@ double getPDFsingleChannel(const Pdf::pdfArray& X,int PDGcode,int initialState,i
 }
 
 double pdfConvolution(const Pdf::pdfArray &X1,const Pdf::pdfArray &X2, int PDGcode1,int PDGcode2,int initialState1,int initialState2){
-	int code=PDGcode1*100+PDGcode2;
+	int code=PDGcode1*1000+PDGcode2;
 
 	switch (code) {
-	case 5252: break;
-	case 5258: break;
-	case 5852: break;
-	case 5858: break;
+	case 52052: break;
+	case 52058: break;
+	case 58052: break;
+	case 58058: break;
+
+	case 101104: break;
+	case 104101: break;
+	case 102103: break;
+	case 103102: break;
 	default: {
 		//std::cout << "pdfconvo (" << PDGcode1 <<","<< PDGcode2 << "): pdf1: " << pdf(X1,PDGcode1,initialState1)<< " pdf2: " <<  pdf(X2,PDGcode2,initialState2) << std::endl;
 		if (initialState::s_channel==initialState::all){
@@ -183,31 +188,39 @@ double pdfConvolution(const Pdf::pdfArray &X1,const Pdf::pdfArray &X2, int PDGco
 
 	double res=0;
 	switch (code) {
-	case 5252: {
+	case 52052: {
 		if (!initialState::s_channel==initialState::qq) return 0.0;
 	}; break;
-	case 5258: {
+	case 52058: case 101104: case 102103: {
 		if (!initialState::s_channel==initialState::qqb) return 0.0;
 	}; break;
-	case 5852: {
+	case 58052: case 104101: case 103102: {
 		if (!initialState::s_channel==initialState::qbq) return 0.0;
 	}; break;
-	case 5858: {
+	case 58058: {
 		if (!initialState::s_channel==initialState::qbqb) return 0.0;
 	}; break;
 
 	}
 
-	for (int ii=0;ii<6;ii++){
-		switch (code) {
-		case 5252: res+=X1[ii+7]*X2[ii+7]; break;
-		case 5258: res+=X1[ii+7]*X2[5-ii]; break;
-		case 5852: res+=X1[5-ii]*X2[ii+7]; break;
-		case 5858: res+=X1[5-ii]*X2[5-ii]; break;
-		}
-	}
-	return res/(5.0);
-
+	switch (code){
+	case 52052: case 52058: case 58052: case 58058: {
+	  for (int ii=0;ii<6;ii++){
+	    switch (code) {
+	    case 52052: res+=X1[ii+7]*X2[ii+7]; break;
+	    case 52058: res+=X1[ii+7]*X2[5-ii]; break;
+	    case 58052: res+=X1[5-ii]*X2[ii+7]; break;
+	    case 58058: res+=X1[5-ii]*X2[5-ii]; break;
+	    }
+	  }
+	  return res/(5.0);
+	} break;
+	case 101104: return (X1[8]*X2[4] + X1[10]*X2[2])/2.0;
+	case 104101: return (X1[4]*X2[8] + X1[2]*X2[10])/2.0;
+	case 102103: return (X1[7]*X2[5] + X1[9]*X2[3]+ X1[11]*X2[1])/3.0;
+	case 103102: return (X1[5]*X2[7] + X1[3]*X2[9]+ X1[1]*X2[11])/3.0;	    
+	} 
+	
 }
 
 
