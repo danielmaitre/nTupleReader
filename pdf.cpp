@@ -153,11 +153,12 @@ double getPDFsingleChannel(const Pdf::pdfArray& X,int PDGcode,int initialState,i
 	} break;
 
 	}
-
+	cerr << "No PDF value for this PID " << PDGcode << "!" << std::endl;
+	throw exception();
 }
 
 double pdfConvolution(const Pdf::pdfArray &X1,const Pdf::pdfArray &X2, int PDGcode1,int PDGcode2,int initialState1,int initialState2){
-	int code=PDGcode1*1000+PDGcode2;
+	int code = PDGcode1*1000+PDGcode2;
 
 	switch (code) {
 	case 52052: break;
@@ -169,6 +170,17 @@ double pdfConvolution(const Pdf::pdfArray &X1,const Pdf::pdfArray &X2, int PDGco
 	case 104101: break;
 	case 102103: break;
 	case 103102: break;
+
+	case 101103: break;
+	case 103101: break;
+	case 102104: break;
+	case 104102: break;
+
+	case 101102: break;
+	case 102101: break;
+	case 104103: break;
+	case 103104: break;
+
 	default: {
 		//std::cout << "pdfconvo (" << PDGcode1 <<","<< PDGcode2 << "): pdf1: " << pdf(X1,PDGcode1,initialState1)<< " pdf2: " <<  pdf(X2,PDGcode2,initialState2) << std::endl;
 		if (initialState::s_channel==initialState::all){
@@ -176,10 +188,10 @@ double pdfConvolution(const Pdf::pdfArray &X1,const Pdf::pdfArray &X2, int PDGco
 		} else {
 
 			double pdf1=getPDFsingleChannel(X1,PDGcode1,initialState1,initialState::s_channel);
-			//std::cout <<  PDGcode1 << ": " << pdf1 << std::endl;
+			std::cout <<  PDGcode1 << ": " << pdf1 << std::endl;
 			if (pdf1==0.0){return 0.0;}
 			double pdf2=getPDFsingleChannel(X2,PDGcode2,initialState2,initialState::reverse(initialState::s_channel));
-			//std::cout <<  PDGcode1 <<","<< PDGcode2 << ": " << pdf1<< " " << pdf2 << std::endl;
+			std::cout <<  PDGcode1 <<","<< PDGcode2 << ": " << pdf1<< " " << pdf2 << std::endl;
 			return pdf1*pdf2;
 
 		}
@@ -188,16 +200,16 @@ double pdfConvolution(const Pdf::pdfArray &X1,const Pdf::pdfArray &X2, int PDGco
 
 	double res=0;
 	switch (code) {
-	case 52052: {
+	case 52052: case 101101: case 101102: case 102101: case 102102:{
 		if (!initialState::s_channel==initialState::qq) return 0.0;
 	}; break;
-	case 52058: case 101104: case 102103: {
+	case 52058: case 101104: case 102103: case 101103: case 102104: {
 		if (!initialState::s_channel==initialState::qqb) return 0.0;
 	}; break;
-	case 58052: case 104101: case 103102: {
+	case 58052: case 104101: case 103102: case 104102: case 103101: {
 		if (!initialState::s_channel==initialState::qbq) return 0.0;
 	}; break;
-	case 58058: {
+	case 58058: case 103103: case 103104: case 104103: case 104104:{
 		if (!initialState::s_channel==initialState::qbqb) return 0.0;
 	}; break;
 
@@ -219,6 +231,23 @@ double pdfConvolution(const Pdf::pdfArray &X1,const Pdf::pdfArray &X2, int PDGco
 	case 104101: return (X1[4]*X2[8] + X1[2]*X2[10])/2.0;
 	case 102103: return (X1[7]*X2[5] + X1[9]*X2[3]+ X1[11]*X2[1])/3.0;
 	case 103102: return (X1[5]*X2[7] + X1[3]*X2[9]+ X1[1]*X2[11])/3.0;	    
+	
+	case 101103: return (X1[8] + X1[10]) * (X2[1] + X2[3]+ X2[5])/6.0;
+	case 103101: return (X2[8] + X2[10]) * (X1[1] + X1[3]+ X1[5])/6.0;
+	case 102104: return (X1[7] + X1[9] + X1[11]) * (X2[2] + X2[4])/6.0;
+	case 104102: return (X2[7] + X2[9] + X2[11]) * (X1[2] + X1[4])/6.0;
+
+	case 101101: return (X1[8] + X1[10]) * (X2[8] + X2[10])/4.0;
+	case 102102: return (X1[1] + X1[3]+ X1[5]) * (X2[1] + X2[3]+ X2[5])/9.0;
+	case 103103: return (X1[7] + X1[9] + X1[11]) * (X1[7] + X1[9] + X1[11])/9.0;
+	case 104104: return (X1[2] + X1[4]) * (X2[2] + X2[4])/4.0;
+
+	case 101102: return (X1[8] + X1[10]) * (X2[7] + X2[9] + X2[11])/6.0;
+	case 102101: return (X2[8] + X2[10]) * (X1[7] + X1[9] + X1[11])/6.0;
+	case 103104: return (X1[1] + X1[3]+ X1[5]) * (X2[2] + X2[4])/6.0;
+	case 104103: return (X1[2] + X1[4]) * (X2[1] + X2[3]+ X2[5]) /6.0;
+
+
 	} 
 	
 }
@@ -316,7 +345,8 @@ void LHAComputePdf(double x,double Q,pdfArray& pa){
 #else
 
 double pdf(double x, double Q, int PDGcode,int initialState){
-		double results[13];
+	double results[13];
+	if ( abs(PDGcode) < 100) {
 		LHAPDF::xfx(x,Q,results);
 	//	if (Q>1e4){ throw;}
 		if ( initialState == 1 ){
@@ -324,6 +354,18 @@ double pdf(double x, double Q, int PDGcode,int initialState){
 		} else {
 			return results[6-(PDGcode%21)]/x;
 		}
+	else {
+		switch (PDGcode){
+			case 101: return (results[8] + results[10])/2.0; 
+			case 102: return (results[7] + results[9] + results[11])/3.0; 
+			case 103: return (results[1] + results[3] + results[5])/3.0; 
+			case 104: return (results[2] + results[4])/2.0; 
+			default: {
+				cerr << "No pdf for PDG code " << PDGcode << std::endl;
+				throw;
+			}
+		} 		
+	}
 }
 
 double pdf_vsub1(double x, double Q, int PDGcode,int initialState){
@@ -414,6 +456,15 @@ double pdf(const pdfArray& X, int PDGcode,int initialState){
 			case  51: return std::accumulate(&X.tbar+7,&X.t+1,0.0)/(5.0);
 			case  59: return std::accumulate(&X.tbar,&X.tbar+6,0.0)/(5.0);
 			case  10: return (std::accumulate(&X.tbar,&X.t+1,0.0)-X.gluon)/(10.0);
+			case 101: return (X.u + X.c)/2.0; 
+			case 102: return (X.d + X.s + X.b)/3.0; 
+			case 103: return (X.dbar + X.sbar + X.bbar)/3.0; 
+			case 104: return (X.ubar + X.cbar)/2.0; 
+			default: {
+				cerr << "No pdf for PDG code " << PDGcode << std::endl;
+				throw;
+			}
+
 		}
 
 	}
