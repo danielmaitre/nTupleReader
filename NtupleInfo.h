@@ -11,6 +11,7 @@
 #include "TChain.h"
 
 #define MAX_NBR_PARTICLES 100
+#define MAX_NBR_WEIGHTS 1000
 
 
 template <int N> struct NtupleInfo {
@@ -41,12 +42,12 @@ template <int N> struct NtupleInfo {
 
 	int nwgts;
 
-	double wgts[200];
-	int id1s[200];
-	int id2s[200];
-	double x1s[200];
-	double x2s[200];
-	int logmupower[200];
+	double wgts[MAX_NBR_WEIGHTS];
+	int id1s[MAX_NBR_WEIGHTS];
+	int id2s[MAX_NBR_WEIGHTS];
+	double x1s[MAX_NBR_WEIGHTS];
+	double x2s[MAX_NBR_WEIGHTS];
+	int logmupower[MAX_NBR_WEIGHTS];
 
 	float pxCache[N];
 	float pyCache[N];
