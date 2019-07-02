@@ -37,3 +37,5 @@ Makefile.in
 
 /m4
 .buildconfig
+/build-clang/
+.vscode/
