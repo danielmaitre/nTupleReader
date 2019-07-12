@@ -72,6 +72,7 @@ double pdf(double x, double Q, int PDGcode,int initialState,LHAPDF::PDF* PDF){
 			case  51: return std::accumulate(xfs.begin()+7,xfs.end(),0.0)/(5.0*x);
 			case  59: return std::accumulate(xfs.begin(),xfs.begin()+6,0.0)/(5.0*x);
 			case  10: return (std::accumulate(xfs.begin(),xfs.end(),0.0)-xfs[6])/(10.0*x);
+			default: throw;
 		}
 
 	}
@@ -126,9 +127,14 @@ double getPDFsingleChannel(const Pdf::pdfArray& X,int PDGcode,int initialState,i
 				     ){
 				// factor of 2 is to take into account that PDGcode=10 is normalised by 10 while 51 and 59 are normalised by 5
 				return pdf(X,51,initialState)/2;
-			} else {
+			} else if (  ch==initialState::qbg
+					 or ch==initialState::qbq
+				     or ch==initialState::qbqb
+				){
 				return pdf(X,59,initialState)/2;
-			}
+			} else if (ch = initialState::all){
+				return pdf(X,10,initialState);
+			};
 		}
 	} break;
 	case 51: {
@@ -199,22 +205,23 @@ double pdfConvolution(const Pdf::pdfArray &X1,const Pdf::pdfArray &X2, int PDGco
 	}
 
 	double res=0;
-	switch (code) {
-	case 52052: case 101101: case 101102: case 102101: case 102102:{
-		if (!initialState::s_channel==initialState::qq) return 0.0;
-	}; break;
-	case 52058: case 101104: case 102103: case 101103: case 102104: {
-		if (!initialState::s_channel==initialState::qqb) return 0.0;
-	}; break;
-	case 58052: case 104101: case 103102: case 104102: case 103101: {
-		if (!initialState::s_channel==initialState::qbq) return 0.0;
-	}; break;
-	case 58058: case 103103: case 103104: case 104103: case 104104:{
-		if (!initialState::s_channel==initialState::qbqb) return 0.0;
-	}; break;
+	if ( initialState::s_channel != initialState::all ){
+		switch (code) {
+		case 52052: case 101101: case 101102: case 102101: case 102102:{
+			if (! (initialState::s_channel==initialState::qq)) return 0.0;
+		}; break;
+		case 52058: case 101104: case 102103: case 101103: case 102104: {
+			if (!(initialState::s_channel==initialState::qqb)) return 0.0;
+		}; break;
+		case 58052: case 104101: case 103102: case 104102: case 103101: {
+			if (!(initialState::s_channel==initialState::qbq)) return 0.0;
+		}; break;
+		case 58058: case 103103: case 103104: case 104103: case 104104:{
+			if (!(initialState::s_channel==initialState::qbqb)) return 0.0;
+		}; break;
 
+		}
 	}
-
 	switch (code){
 	case 52052: case 52058: case 58052: case 58058: {
 	  for (int ii=0;ii<6;ii++){
@@ -249,7 +256,7 @@ double pdfConvolution(const Pdf::pdfArray &X1,const Pdf::pdfArray &X2, int PDGco
 
 
 	} 
-	
+	throw;	
 }
 
 
